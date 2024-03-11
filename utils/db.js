@@ -1,21 +1,27 @@
-import mongodb from 'mongodb';
+import { MongoClient } from 'mongodb';
+
+const { env } = process;
 
 class DBClient {
   constructor() {
-    return (async () => {
-      const { env } = process;
-      const host = env.DB_HOST ? env.DB_HOST : 'localhost';
-      const port = env.DB_PORT ? env.DB_PORT : '27017';
-      const database = env.DB_DATABASE ? env.DB_DATABASE : 'files_manager';
-      this.client = mongodb.connect(`mongodb://${host}:${port}`, { useUnifiedTopology: true });
-      this.db = this.client.db(database);
+    const host = env.DB_HOST ? env.DB_HOST : 'localhost';
+    const port = env.DB_PORT ? env.DB_PORT : '27017';
+    this.client = new MongoClient(`mongodb://${host}:${port}`, { useUnifiedTopology: true });
+    this.db = undefined;
+    this.isConnected = false;
+    this.connection();
+  }
 
-      return this; // Return the newly-created instance
-    })();
+  async connection() {
+    const database = env.DB_DATABASE ? env.DB_DATABASE : 'files_manager';
+    this.client.connect().then(() => {
+      this.db = this.client.db(database);
+      this.isConnected = true;
+    }).catch((err) => console.log(err));
   }
 
   isAlive() {
-    return this.client.isConnected();
+    return this.isConnected;
   }
 
   async nbUsers() {
