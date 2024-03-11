@@ -19,18 +19,14 @@ class DBClient {
     return this.client.isConnected();
   }
 
-  __collection(name) {
-    return this.db.collection(name);
-  }
-
   async nbUsers() {
-    const users = await this.__collection('users').find({}).toArray();
+    const users = await this.db.collection('users').find({}).toArray();
 
     return users.length;
   }
 
   async nbFiles() {
-    const files = await this.__collection('files').find({}).toArray();
+    const files = await this.db.collection('files').find({}).toArray();
 
     return files.length;
   }
