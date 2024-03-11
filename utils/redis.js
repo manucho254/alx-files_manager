@@ -19,12 +19,14 @@ class RedisClient {
   }
 
   async get(key) {
+    let val;
     await this.client.get(key, (err, data) => {
       if (err) {
         throw err;
       }
-      return data;
+      val = data;
     });
+    return val;
   }
 
   async set(key, value, duration) {
