@@ -8,7 +8,8 @@ class DBClient {
       const port = env.DB_PORT ? env.DB_PORT : '27017';
       const database = env.DB_DATABASE ? env.DB_DATABASE : 'files_manager';
       this.client = new MongoClient(`mongodb://${host}:${port}`);
-      await this.client.connect();
+
+      try { await this.client.connect(); } catch (err) { console.log(err); }
       this.db = this.client.db(database);
 
       return this; // Return the newly-created instance
