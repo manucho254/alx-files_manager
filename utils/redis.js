@@ -24,6 +24,7 @@ class RedisClient {
       if (err) {
         throw err;
       }
+      console.log(data);
       val = data;
     });
     return val;
