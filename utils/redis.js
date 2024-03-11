@@ -2,7 +2,7 @@ import redis from 'redis';
 
 class RedisClient {
   constructor() {
-    this.client = redis.createClient();
+    this.client = redis.createClient({ url: 'redis://127.0.0.1:6379' });
     this.connected = false;
 
     this.client.on('error', (err) => {
