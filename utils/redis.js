@@ -19,12 +19,7 @@ class RedisClient {
   }
 
   async get(key) {
-    const val = await this.client.get(key, (err, data) => {
-      if (err) {
-        throw err;
-      }
-      return data;
-    });
+    const val = await this.client.get(key);
     return val;
   }
 
