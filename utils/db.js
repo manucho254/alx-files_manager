@@ -47,7 +47,7 @@ class DBClient {
   async addUser(userEmail, userPassword) {
     const query = { email: userEmail, password: userPassword };
     await this.db.collection('users').insertOne(query);
-    const user = await this.findUser(userEmail);
+    const user = await this.findUser({ email: userEmail });
 
     return user;
   }
