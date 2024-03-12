@@ -6,9 +6,9 @@ const getStatus = (req, res) => {
   res.status(200).json(data);
 };
 
-const getStats = (req, res) => {
-  const nbUsers = dbClient.nbUsers();
-  const nbFiles = dbClient.nbFiles();
+const getStats = async (req, res) => {
+  const nbUsers = await dbClient.nbUsers();
+  const nbFiles = await dbClient.nbFiles();
 
   res.status(200).json({ users: nbUsers, files: nbFiles });
 };
