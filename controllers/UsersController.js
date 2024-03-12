@@ -2,6 +2,7 @@ import dbClient from '../utils/db';
 import { hashPassword } from '../utils/helpers';
 
 const postNew = (req, res) => {
+  console.log(req);
   const { email, password } = req.body;
   let user = dbClient.findUser(email);
 
