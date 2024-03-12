@@ -10,7 +10,7 @@ const postNew = async (req, res) => {
   if (user) return res.status(400).json({ error: 'Already exist' });
 
   user = await dbClient.addUser(email, hashPassword(password));
-  return res.status(200).json({ id: user._id, email: user.email });
+  res.status(200).json({ id: user._id, email: user.email });
 };
 
 module.exports = { postNew };
