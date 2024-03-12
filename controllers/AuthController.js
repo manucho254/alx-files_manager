@@ -17,12 +17,13 @@ const getConnect = async (req, res) => {
   const [email, password] = credentials.split(':');
   const hashedPass = hashPassword(password);
   const user = await dbClient.findUser({ email });
+  const token = uuidv4();
 
   if (!user || user.password !== hashedPass) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
-  const token = uuidv4();
-  await redisClient.set(`auth_${token}`, user._id, 86400);
+
+  await redisClient.set(`auth_${token}`, user._id.toString(), 86400);
   return res.status(200).json({ token });
 };
 
