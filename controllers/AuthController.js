@@ -1,4 +1,4 @@
-import { uuid } from 'uuid';
+import { uuidv4 } from 'uuid';
 import { ObjectId } from 'mongodb';
 import dbClient from '../utils/db';
 import { hashPassword } from '../utils/helpers';
@@ -20,7 +20,7 @@ const getConnect = async (req, res) => {
   if (!user || user.password !== hashPassword(password)) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
-  const token = uuid();
+  const token = uuidv4();
   await redisClient.set(`auth_${token}`, user._id, 86400);
   return res.status(200).json({ token });
 };
