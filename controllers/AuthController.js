@@ -1,8 +1,8 @@
 import { uuid } from 'uuidv4';
+import { ObjectId } from 'mongodb';
 import dbClient from '../utils/db';
 import { hashPassword } from '../utils/helpers';
 import redisClient from '../utils/redis';
-import { ObjectId } from 'mongodb';
 
 const getConnect = async (req, res) => {
   const authHeader = req.headers.authorization;
@@ -15,7 +15,7 @@ const getConnect = async (req, res) => {
   const base64Credentials = authHeader.split(' ')[1];
   const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
   const [email, password] = credentials.split(':');
-  const user = await dbClient.findUser({email});
+  const user = await dbClient.findUser({ email });
 
   if (!user || user.password !== hashPassword(password)) {
     return res.status(401).json({ error: 'Unauthorized' });
@@ -34,13 +34,12 @@ const getDisconnect = async (req, res) => {
 
 const getMe = async (req, res) => {
   const header = req.headers['x-token'];
-  let userId = await redisClient.get(`auth_${header}`);
-  
-   
+  const userId = await redisClient.get(`auth_${header}`);
+
   if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
   const newObjId = new ObjectId(userId);
-  const user = await dbClient.findUser({ _id: newObjId })
+  const user = await dbClient.findUser({ _id: newObjId });
 
   return res.status(201).json({ id: userId, email: user.email });
 };
