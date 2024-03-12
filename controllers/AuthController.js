@@ -28,9 +28,12 @@ const getConnect = async (req, res) => {
 
 const getDisconnect = async (req, res) => {
   const header = req.headers['x-token'];
+  const userId = await redisClient.get(`auth_${header}`);
+
+  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
   await redisClient.del(`auth_${header}`);
-  res.status(204).json();
+  return res.status(204).json();
 };
 
 const getMe = async (req, res) => {
