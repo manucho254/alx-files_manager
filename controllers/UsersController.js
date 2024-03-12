@@ -3,7 +3,7 @@ import { hashPassword } from '../utils/helpers';
 
 const postNew = async (req, res) => {
   const { email, password } = req.body;
-  let user = await dbClient.findUser(email);
+  let user = await dbClient.findUser({ email });
 
   if (!email) return res.status(400).json({ error: 'Missing email' });
   if (!password) return res.status(400).json({ error: 'Missing password' });

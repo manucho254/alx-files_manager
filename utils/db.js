@@ -38,8 +38,8 @@ class DBClient {
     return files.length;
   }
 
-  async findUser(userEmail) {
-    const user = await this.db.collection('users').findOne({ email: userEmail });
+  async findUser(query) {
+    const user = await this.db.collection('users').findOne(query);
 
     return user;
   }
