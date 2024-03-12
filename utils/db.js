@@ -37,6 +37,20 @@ class DBClient {
 
     return files.length;
   }
+
+  async findUser(email) {
+    const user = await this.db.collection('users').findOne({ email });
+
+    return user;
+  }
+
+  async addUser(email, password) {
+    const query = { email, password };
+    await this.db.collection('users').insertOne(query);
+    const user = await this.findUser(email);
+
+    return user;
+  }
 }
 
 const dbClient = new DBClient();
