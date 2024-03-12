@@ -25,13 +25,11 @@ const postUpload = async (req, res) => {
     if (file.type !== 'folder') return res.status(400).json({ error: 'Parent is not a folder' });
   }
 
-  const newParentId = new ObjectId(userId);
-  const newUserId = new ObjectId(parentId);
   const document = {
-    newUserId,
+    userId,
     name,
     type,
-    newParentId,
+    parentId,
     isPublic,
   };
   if (type === 'folder') {

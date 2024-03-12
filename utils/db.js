@@ -1,4 +1,4 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 
 const { env } = process;
 
@@ -59,8 +59,15 @@ class DBClient {
   }
 
   async insertFile(query) {
+    if (query.parentId !== '0') {
+	const newParentId = ObjectId(query.parentId);
+	query["parentId"] = newParentId
+    }
+    const newUserId = ObjectId(query.userId);
+    query["userId"] = newUserId;
+	
     await this.db.collection('files').insertOne(query);
-    const file = await this.findUser({ userId: query.userId });
+    const file = await this.findFile({ userId: query.userId });
 
     return file;
   }
