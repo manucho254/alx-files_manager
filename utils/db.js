@@ -59,15 +59,16 @@ class DBClient {
   }
 
   async insertFile(query) {
+    const data = { ...query };
     if (query.parentId !== '0') {
-	const newParentId = ObjectId(query.parentId);
-	query["parentId"] = newParentId
+      const newParentId = ObjectId(data.parentId);
+      data.parentId = newParentId;
     }
-    const newUserId = ObjectId(query.userId);
-    query["userId"] = newUserId;
-	
-    await this.db.collection('files').insertOne(query);
-    const file = await this.findFile({ userId: query.userId });
+    const newUserId = ObjectId(data.userId);
+    data.userId = newUserId;
+
+    await this.db.collection('files').insertOne(data);
+    const file = await this.findFile({ userId: data.userId });
 
     return file;
   }

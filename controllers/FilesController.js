@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from 'uuid';
-import { ObjectId } from 'mongodb';
 import redisClient from '../utils/redis';
 import dbClient from '../utils/db';
 import { checkPath } from '../utils/helpers';
