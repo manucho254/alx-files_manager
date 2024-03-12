@@ -16,10 +16,10 @@ const getConnect = async (req, res) => {
   const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
   const [email, password] = credentials.split(':');
   const hashedPass = hashPassword(password);
-  const user = await dbClient.findUser({ email });
+  const user = await dbClient.findUser({ email, password: hashedPass });
   const token = uuidv4();
 
-  if (!user || user.password !== hashedPass) {
+  if (!user) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
