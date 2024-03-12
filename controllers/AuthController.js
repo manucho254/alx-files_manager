@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
 import { ObjectId } from 'mongodb';
 import dbClient from '../utils/db';
-import { hashPassword } from '../utils/helpers';
 import redisClient from '../utils/redis';
+import { hashPassword } from '../utils/helpers';
 
 const getConnect = async (req, res) => {
   const authHeader = req.headers.authorization;
