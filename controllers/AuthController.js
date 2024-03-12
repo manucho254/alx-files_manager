@@ -7,7 +7,7 @@ import { hashPassword } from '../utils/helpers';
 const getConnect = async (req, res) => {
   const authHeader = req.headers.authorization;
 
-  if (!authHeader || authHeader.indexOf('Basic ') === -1) {
+  if (!authHeader || !authHeader.startsWith('Basic ')) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
