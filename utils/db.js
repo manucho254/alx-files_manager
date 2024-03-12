@@ -38,16 +38,16 @@ class DBClient {
     return files.length;
   }
 
-  async findUser(email) {
-    const user = await this.db.collection('users').findOne({ email });
+  async findUser(userEmail) {
+    const user = await this.db.collection('users').findOne({ email: userEmail });
 
     return user;
   }
 
-  async addUser(email, password) {
-    const query = { email, password };
+  async addUser(userEmail, userPassword) {
+    const query = { email: userEmail, password: userPassword };
     await this.db.collection('users').insertOne(query);
-    const user = await this.findUser(email);
+    const user = await this.findUser(userEmail);
 
     return user;
   }
