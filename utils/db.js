@@ -25,14 +25,14 @@ class DBClient {
   }
 
   async nbUsers() {
-    if (!this.db) return null;
+    if (!this.db) return 0;
     const users = await this.db.collection('users').find({}).toArray();
 
     return users.length;
   }
 
   async nbFiles() {
-    if (!this.db) return null;
+    if (!this.db) return 0;
     const files = await this.db.collection('files').find({}).toArray();
 
     return files.length;
