@@ -135,9 +135,7 @@ const getFile = async (req, res) => {
 
   const file = await dbClient.findFile({ _id: id });
   if (!file) return res.status(404).json({ error: 'Not found' });
-  if ((!file.isPublic && !userId)) {
-    return res.status(404).json({ error: 'Not found' });
-  }
+  if ((!file.isPublic && !userId)) return res.status(404).json({ error: 'Not found' });
 
   if (file.type === 'folder') return res.status(400).json({ error: "A folder doesn't have content" });
   if (!fs.existsSync(file.localPath)) return res.status(404).json({ error: 'Not found' });
