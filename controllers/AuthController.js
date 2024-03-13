@@ -9,7 +9,7 @@ const getConnect = async (req, res) => {
     // verify auth credentials
     const authHeader = req.headers.authorization;
     const base64Credentials = authHeader.split(' ')[1];
-    const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
+    const credentials = Buffer.from(base64Credentials, 'base64').toString();
     const [email, password] = credentials.split(':');
     const hashedPass = hashPassword(password);
     const user = await dbClient.findUser({ email, password: hashedPass });
