@@ -27,25 +27,33 @@ const getConnect = async (req, res) => {
 };
 
 const getDisconnect = async (req, res) => {
-  const header = req.headers['x-token'];
-  const userId = await redisClient.get(`auth_${header}`);
+  try {
+    const header = req.headers['x-token'];
+    const userId = await redisClient.get(`auth_${header}`);
 
-  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
-  await redisClient.del(`auth_${header}`);
-  return res.status(204).send();
+    await redisClient.del(`auth_${header}`);
+    return res.status(204).send();
+  } catch (err) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
 };
 
 const getMe = async (req, res) => {
-  const header = req.headers['x-token'];
-  const userId = await redisClient.get(`auth_${header}`);
+  try {
+    const header = req.headers['x-token'];
+    const userId = await redisClient.get(`auth_${header}`);
 
-  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
-  const newObjId = new ObjectId(userId);
-  const user = await dbClient.findUser({ _id: newObjId });
+    const newObjId = new ObjectId(userId);
+    const user = await dbClient.findUser({ _id: newObjId });
 
-  return res.status(201).json({ id: userId, email: user.email });
+    return res.status(201).json({ id: userId, email: user.email });
+  } catch (err) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
 };
 
 module.exports = { getConnect, getDisconnect, getMe };
