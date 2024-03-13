@@ -23,6 +23,7 @@ const getConnect = async (req, res) => {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
+  console.log(user);
   await redisClient.set(`auth_${token}`, user._id.toString(), 86400);
   return res.status(200).json({ token });
 };
@@ -34,7 +35,7 @@ const getDisconnect = async (req, res) => {
   if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
   await redisClient.del(`auth_${header}`);
-  return res.status(204).json();
+  return res.status(204).send();
 };
 
 const getMe = async (req, res) => {

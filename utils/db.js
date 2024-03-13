@@ -40,7 +40,9 @@ class DBClient {
 
   async findUser(query) {
     const user = await this.db.collection('users').findOne(query);
-
+    if (!user) {
+      return null;
+    }
     return user;
   }
 
