@@ -54,13 +54,23 @@ class DBClient {
 
   async findFile(query) {
     const file = await this.db.collection('files').findOne(query);
+    const data = {};
 
-    return file;
+    if (file) {
+      for (const [key, val] of Object.entries()) {
+        if (key === '_id') {
+          data.id = val;
+        } else {
+          data[key] = val;
+        }
+      }
+    }
+    return data;
   }
 
   async insertFile(query) {
     const data = { ...query };
-    if (query.parentId !== '0') {
+    if (query.parentId !== 0) {
       const newParentId = ObjectId(data.parentId);
       data.parentId = newParentId;
     }
