@@ -56,9 +56,8 @@ class DBClient {
     const file = await this.db.collection('files').findOne(query);
     const data = {};
 
-    
     if (file) {
-      for (let [key, val] of Object.entries(file)) {
+      for (const [key, val] of Object.entries(file)) {
         if (key === '_id') {
           data.id = val;
         } else {
