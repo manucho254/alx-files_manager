@@ -1,5 +1,7 @@
+import { ObjectId } from 'mongodb';
 import dbClient from '../utils/db';
 import { hashPassword } from '../utils/helpers';
+import redisClient from '../utils/redis';
 
 const postNew = async (req, res) => {
   const { email, password } = req.body;
@@ -13,4 +15,20 @@ const postNew = async (req, res) => {
   return res.status(201).json({ id: user._id, email: user.email });
 };
 
-module.exports = { postNew };
+const getMe = async (req, res) => {
+  try {
+    const header = req.headers['x-token'];
+    const userId = await redisClient.get(`auth_${header}`);
+
+    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
+    const newObjId = new ObjectId(userId);
+    const user = await dbClient.findUser({ _id: newObjId });
+
+    return res.status(201).json({ id: userId, email: user.email });
+  } catch (err) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+};
+
+module.exports = { postNew, getMe };

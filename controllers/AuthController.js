@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { ObjectId } from 'mongodb';
+
 import dbClient from '../utils/db';
 import redisClient from '../utils/redis';
 import { hashPassword } from '../utils/helpers';
@@ -8,6 +8,10 @@ const getConnect = async (req, res) => {
   try {
     // verify auth credentials
     const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Basic ')) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
     const base64Credentials = authHeader.split(' ')[1];
     const credentials = Buffer.from(base64Credentials, 'base64').toString();
     const [email, password] = credentials.split(':');
@@ -38,20 +42,4 @@ const getDisconnect = async (req, res) => {
   }
 };
 
-const getMe = async (req, res) => {
-  try {
-    const header = req.headers['x-token'];
-    const userId = await redisClient.get(`auth_${header}`);
-
-    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
-
-    const newObjId = new ObjectId(userId);
-    const user = await dbClient.findUser({ _id: newObjId });
-
-    return res.status(201).json({ id: userId, email: user.email });
-  } catch (err) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-};
-
-module.exports = { getConnect, getDisconnect, getMe };
+module.exports = { getConnect, getDisconnect };

@@ -1,8 +1,8 @@
 import express from 'express';
 
 const { getStatus, getStats } = require('../controllers/AppController');
-const { postNew } = require('../controllers/UsersController');
-const { getConnect, getDisconnect, getMe } = require('../controllers/AuthController');
+const { postNew, getMe } = require('../controllers/UsersController');
+const { getConnect, getDisconnect } = require('../controllers/AuthController');
 const { getShow, getIndex, postUpload } = require('../controllers/FilesController');
 
 const router = express.Router();
