@@ -135,7 +135,18 @@ class DBClient {
       $set: data, // Use $set to specify the fields to update
     };
     // Perform the update operation
-    await this.db.collection.updateOne(filter, updateOperation);
+    this.db.collection.updateOne(filter, updateOperation, (err, result) => {
+      if (err) {
+        console.error('Error updating document:', err);
+        return;
+      }
+
+      if (result.result.ok === 1) {
+        console.log(`${result.modifiedCount} document(s) updated`);
+      } else {
+        console.log('Update operation failed.');
+      }
+    });
     const file = await this.findFile({ userId: data.userId, _id: filter._id });
 
     return file;
