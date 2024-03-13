@@ -129,7 +129,7 @@ class DBClient {
     const data = { ...query };
     const filter = { userId: ObjectId(data.userId), _id: ObjectId(data._id) };
     delete data._id;
-    delete data.userId
+    delete data.userId;
 
     // Define the update operation
     const updateOperation = {
