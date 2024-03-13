@@ -5,9 +5,9 @@ import redisClient from '../utils/redis';
 import { hashPassword } from '../utils/helpers';
 
 const getConnect = async (req, res) => {
-  const authHeader = req.headers.authorization;
   try {
     // verify auth credentials
+    const authHeader = req.headers.authorization;
     const base64Credentials = authHeader.split(' ')[1];
     const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
     const [email, password] = credentials.split(':');
@@ -15,9 +15,7 @@ const getConnect = async (req, res) => {
     const user = await dbClient.findUser({ email, password: hashedPass });
     const token = uuidv4();
 
-    if (!user) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
+    if (!user) return res.status(401).json({ error: 'Unauthorized' });
 
     await redisClient.set(`auth_${token}`, user._id.toString(), 86400);
     return res.status(200).json({ token });
