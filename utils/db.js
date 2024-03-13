@@ -120,6 +120,7 @@ class DBClient {
     data.userId = newUserId;
 
     const result = await this.db.collection('files').insertOne(data);
+    console.log(result);
     const file = await this.findFile({ userId: query.userId, _id: result.insertedId });
 
     return file;
