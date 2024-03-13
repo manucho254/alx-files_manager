@@ -59,6 +59,7 @@ class DBClient {
 
     if (obj._id) { obj._id = new ObjectId(query._id); }
     if (obj.userId) { obj.userId = new ObjectId(query.userId); }
+    if (obj.parentId && obj.parentId !== '0') { obj.parentId = new ObjectId(query.parentId); }
 
     const file = await this.db.collection('files').findOne(obj);
     const data = {};

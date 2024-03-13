@@ -15,7 +15,7 @@ const postUpload = async (req, res) => {
   } = req.body;
   if (!userId) return res.status(401).json({ error: 'Unauthorized' });
   if (!name) return res.status(400).json({ error: 'Missing name' });
-  if (!type || !validTypes.includes(type)) return res.status(400);
+  if (!type || !validTypes.includes(type)) return res.status(400).json({ error: 'Missing type' });
   if (!data && type !== 'folder') return res.status(400).json({ error: 'Missing data' });
 
   if (parentId !== '0') {
@@ -39,8 +39,7 @@ const postUpload = async (req, res) => {
   const rootPath = process.env.FOLDER_PATH || '/tmp/files_manager';
   await checkPath(rootPath);
   const fullPath = path.join(rootPath, uuidv4());
-  const fileContent = Buffer.from(data, 'base64');
-  fs.writeFileSync(fullPath, fileContent);
+  fs.writeFileSync(fullPath, data, 'base64');
 
   document.localPath = fullPath;
   const fData = await dbClient.insertFile(document);
