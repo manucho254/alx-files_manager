@@ -3,7 +3,7 @@ import express from 'express';
 const { getStatus, getStats } = require('../controllers/AppController');
 const { postNew } = require('../controllers/UsersController');
 const { getConnect, getDisconnect, getMe } = require('../controllers/AuthController');
-const { postUpload } = require('../controllers/FilesController');
+const { postUpload, getShow, getIndex } = require('../controllers/FilesController');
 
 const router = express.Router();
 
@@ -14,5 +14,7 @@ router.get('/connect', getConnect);
 router.get('/disconnect', getDisconnect);
 router.get('/users/me', getMe);
 router.post('/files', postUpload);
+router.get('/files/:id', getShow);
+router.get('files', getIndex);
 
 module.exports = router;

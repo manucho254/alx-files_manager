@@ -68,9 +68,42 @@ class DBClient {
     return data;
   }
 
+  async findFiles(query) {
+    const skipCount = query.pageNumber >= 1 ? ((query.pageNumber - 1) * 20) : 20;
+    let newParentId = query.parentId;
+
+    if (query.parentId !== '0') {
+      newParentId = ObjectId(query.parentId);
+    }
+    // Define the aggregation pipeline
+    const pipeline = [
+      // Pagination: Skip and Limit
+      { $match: { parentId: newParentId } },
+      { $skip: skipCount },
+      { $limit: 20 },
+      // Additional aggregation stages if needed
+    ];
+
+    const files = await this.db.collection('files').aggregate(pipeline).toArray();
+    const data = [];
+
+    files.forEach((file) => {
+      const obj = {};
+      for (const [key, val] of Object.entries(file)) {
+        if (key === '_id') {
+          obj.id = val;
+        } else {
+          obj[key] = val;
+        }
+      }
+      data.push(obj);
+    });
+    return data;
+  }
+
   async insertFile(query) {
     const data = { ...query };
-    if (query.parentId !== 0) {
+    if (query.parentId !== '0') {
       const newParentId = ObjectId(data.parentId);
       data.parentId = newParentId;
     }

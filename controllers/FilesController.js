@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import { ObjectId } from 'mongodb';
 import redisClient from '../utils/redis';
 import dbClient from '../utils/db';
 import { checkPath } from '../utils/helpers';
@@ -11,14 +12,14 @@ const postUpload = async (req, res) => {
   const userId = await redisClient.get(`auth_${header}`);
   const validTypes = ['folder', 'file', 'image'];
   const {
-    name, type, parentId = 0, isPublic = false, data,
+    name, type, parentId = '0', isPublic = false, data,
   } = req.body;
   if (!userId) return res.status(401).json({ error: 'Unauthorized' });
   if (!name) return res.status(400).json({ error: 'Missing name' });
   if (!type || !validTypes.includes(type)) return res.status(400);
   if (!data && type !== 'folder') return res.status(400).json({ error: 'Missing data' });
 
-  if (parentId !== 0) {
+  if (parentId !== '0') {
     const file = await dbClient.findFile({ parentId });
     if (!file) return res.status(400).json({ error: 'Parent not found' });
     if (file.type !== 'folder') return res.status(400).json({ error: 'Parent is not a folder' });
@@ -48,4 +49,31 @@ const postUpload = async (req, res) => {
   return res.status(200).json(fData);
 };
 
-module.exports = { postUpload };
+const getShow = async (req, res) => {
+  const header = req.headers['x-token'];
+  const userId = await redisClient.get(`auth_${header}`);
+  const { fileId } = req.params;
+
+  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
+  const newObjId = new ObjectId(fileId);
+  const file = await dbClient.findFile({ userId, _id: newObjId });
+
+  if (!file) return res.status(404).json({ error: 'Not found' });
+
+  return res.status(200).json(file);
+};
+
+const getIndex = async (req, res) => {
+  const header = req.headers['x-token'];
+  const userId = await redisClient.get(`auth_${header}`);
+  const { parentId = '0', page } = req.query;
+
+  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+  const currentPage = Number(page) || 0;
+  const result = await dbClient.findFiles({ pageNUmber: currentPage, parentId });
+
+  return res.status(200).json(result);
+};
+
+module.exports = { postUpload, getShow, getIndex };
