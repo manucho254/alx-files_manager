@@ -62,17 +62,9 @@ class DBClient {
     if (obj.parentId && obj.parentId !== '0') { obj.parentId = new ObjectId(query.parentId); }
 
     const file = await this.db.collection('files').findOne(obj);
-    const data = {};
 
     if (file) {
-      for (const [key, val] of Object.entries(file)) {
-        if (key === '_id') {
-          data.id = val;
-        } else {
-          data[key] = val;
-        }
-      }
-      return data;
+      return this.cleanData(file);
     }
     return null;
   }
@@ -98,15 +90,7 @@ class DBClient {
     const data = [];
 
     files.forEach((file) => {
-      const obj = {};
-      for (const [key, val] of Object.entries(file)) {
-        if (key === '_id') {
-          obj.id = val;
-        } else {
-          obj[key] = val;
-        }
-      }
-      data.push(obj);
+      data.push(this.cleanData(file));
     });
     return data;
   }
@@ -141,6 +125,25 @@ class DBClient {
     const file = await this.findFile({ userId: query.userId, _id: query._id });
 
     return file;
+  }
+
+  static cleanData(file) {
+    const data = { };
+
+    for (const [key, val] of Object.entries(file)) {
+      if (key === '_id') {
+        data.id = val.toString();
+      } else if (key === 'userId') {
+        data.userId = val.toString();
+      } else if (key === 'parentId') {
+        if (val === '0') data.parentId = Number(val);
+        else data.parentId = val.toString();
+      } else {
+        data[key] = val;
+      }
+    }
+
+    return data;
   }
 }
 
