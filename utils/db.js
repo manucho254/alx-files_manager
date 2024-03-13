@@ -134,7 +134,7 @@ class DBClient {
       if (key === '_id') {
         data.id = val;
       } else if (key === 'parentId') {
-        if (val === '0') data[key] = Number(val);
+        if (val === '0') data[key] = 0;
         else data[key] = val;
       } else {
         data[key] = val;
