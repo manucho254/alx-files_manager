@@ -3,7 +3,7 @@ import express from 'express';
 const { getStatus, getStats } = require('../controllers/AppController');
 const { postNew } = require('../controllers/UsersController');
 const { getConnect, getDisconnect, getMe } = require('../controllers/AuthController');
-const { postUpload, getShow, getIndex } = require('../controllers/FilesController');
+const { getShow, getIndex, postUpload } = require('../controllers/FilesController');
 
 const router = express.Router();
 
