@@ -119,8 +119,24 @@ class DBClient {
     const newUserId = new ObjectId(data.userId);
     data.userId = newUserId;
 
-    await this.db.collection('files').insertOne(data);
-    const file = await this.findFile({ userId: data.userId });
+    const result = await this.db.collection('files').insertOne(data);
+    const file = await this.findFile({ userId: query.userId, _id: result.insertedId });
+
+    return file;
+  }
+
+  async updateFile(query) {
+    const data = { ...query };
+    const filter = { userId: ObjectId(data.userId), _id: ObjectId(data._id) };
+    delete data._id;
+
+    // Define the update operation
+    const updateOperation = {
+      $set: data, // Use $set to specify the fields to update
+    };
+    // Perform the update operation
+    await this.db.collection.updateOne(filter, updateOperation);
+    const file = await this.findFile({ userId: data.userId, _id: filter._id });
 
     return file;
   }
