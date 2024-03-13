@@ -64,8 +64,9 @@ class DBClient {
           data[key] = val;
         }
       }
+      return data;
     }
-    return data;
+    return null;
   }
 
   async findFiles(query) {
