@@ -17,7 +17,7 @@ router.route('/users/me').get(getMe);
 router.route('/files').get(getIndex).post(postUpload);
 router.route('/files/:id').get(getShow);
 router.route('/users').post(postNew);
-router.route('/files/:id/publish').put(putPublish);
-router.route('/files/:id/unpublish').put(putUnpublish);
+router.put('/files/:id/publish', putPublish);
+router.put('/files/:id/unpublish', putUnpublish);
 
 module.exports = router;
