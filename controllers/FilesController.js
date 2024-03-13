@@ -101,6 +101,7 @@ const putPublish = async (req, res) => {
 
     return res.status(200).json(file);
   } catch (err) {
+    console.log(err);
     return res.status(401).json({ error: 'Unauthorized' });
   }
 };
@@ -121,6 +122,7 @@ const putUnpublish = async (req, res) => {
 
     return res.status(200).json(file);
   } catch (err) {
+    console.log(err);
     return res.status(401).json({ error: 'Unauthorized' });
   }
 };

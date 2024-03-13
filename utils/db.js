@@ -129,25 +129,15 @@ class DBClient {
     const data = { ...query };
     const filter = { userId: ObjectId(data.userId), _id: ObjectId(data._id) };
     delete data._id;
+    delete data.userId
 
     // Define the update operation
     const updateOperation = {
       $set: data, // Use $set to specify the fields to update
     };
     // Perform the update operation
-    this.db.collection.updateOne(filter, updateOperation, (err, result) => {
-      if (err) {
-        console.error('Error updating document:', err);
-        return;
-      }
-
-      if (result.result.ok === 1) {
-        console.log(`${result.modifiedCount} document(s) updated`);
-      } else {
-        console.log('Update operation failed.');
-      }
-    });
-    const file = await this.findFile({ userId: data.userId, _id: filter._id });
+    await this.db.collection('files').updateOne(filter, updateOperation);
+    const file = await this.findFile({ userId: query.userId, _id: query._id });
 
     return file;
   }
