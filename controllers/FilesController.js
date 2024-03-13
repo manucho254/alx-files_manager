@@ -5,6 +5,7 @@ import { checkPath } from '../utils/helpers';
 
 const path = require('path');
 const fs = require('fs');
+const mime = require('mime-types');
 
 const postUpload = async (req, res) => {
   try {
@@ -127,6 +128,26 @@ const putUnpublish = async (req, res) => {
   }
 };
 
+const getFile = async (req, res) => {
+  const header = req.headers['x-token'];
+  const userId = await redisClient.get(`auth_${header}`);
+  const { id } = req.params;
+
+  const file = await dbClient.findFile({ _id: id });
+  if (!file) return res.status(404).json({ error: 'Not found' });
+  if ((!file.isPublic && !userId) || file.userId !== userId) {
+    return res.status(404).json({ error: 'Not found' });
+  }
+
+  if (file.type === 'folder') return res.status(400).json({ error: "A folder doesn't have content" });
+  if (!fs.existsSync(file.localPath)) return res.status(404).json({ error: 'Not found' });
+
+  // Set the Content-Type header
+  res.set(mime.lookup(file.name));
+  // Send the file
+  return res.sendFile(file.localPath);
+};
+
 module.exports = {
-  postUpload, getShow, getIndex, putPublish, putUnpublish,
+  postUpload, getShow, getIndex, putPublish, putUnpublish, getFile,
 };
