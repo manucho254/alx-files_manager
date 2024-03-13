@@ -52,12 +52,11 @@ const postUpload = async (req, res) => {
 const getShow = async (req, res) => {
   const header = req.headers['x-token'];
   const userId = await redisClient.get(`auth_${header}`);
-  const { fileId } = req.params;
+  const { id } = req.params;
 
   if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
-  const newObjId = new ObjectId(fileId);
-  const file = await dbClient.findFile({ userId, _id: newObjId });
+  const file = await dbClient.findFile({ userId, _id: id });
 
   if (!file) return res.status(404).json({ error: 'Not found' });
 

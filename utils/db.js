@@ -53,7 +53,14 @@ class DBClient {
   }
 
   async findFile(query) {
-    const file = await this.db.collection('files').findOne(query);
+    let obj = { ...query };
+
+    if (obj._id)
+	obj._id = new ObjectId(query._id);
+    if (obj.userId)
+	obj.userId = new ObjectId(query.userId);
+
+    const file = await this.db.collection('files').findOne(obj);
     const data = {};
 
     if (file) {
@@ -70,24 +77,25 @@ class DBClient {
   }
 
   async findFiles(query) {
-    const skipCount = query.pageNumber >= 1 ? ((query.pageNumber - 1) * 20) : 20;
+    const skipCount = query.pageNumber >= 1 ? ((query.pageNumber - 1) * 20) : 0;
     let newParentId = query.parentId;
 
-    if (query.parentId !== '0') {
-      newParentId = ObjectId(query.parentId);
-    }
     // Define the aggregation pipeline
     const pipeline = [
       // Pagination: Skip and Limit
-      { $match: { parentId: newParentId } },
       { $skip: skipCount },
       { $limit: 20 },
       // Additional aggregation stages if needed
     ];
-
+   
+    if (query.parentId !== '0') {
+       newParentId = new ObjectId(query.parentId);
+       pipeline.push({ $match: { parentId: newParentId } });
+     }
+    
     const files = await this.db.collection('files').aggregate(pipeline).toArray();
     const data = [];
-
+      
     files.forEach((file) => {
       const obj = {};
       for (const [key, val] of Object.entries(file)) {
@@ -105,10 +113,9 @@ class DBClient {
   async insertFile(query) {
     const data = { ...query };
     if (query.parentId !== '0') {
-      const newParentId = ObjectId(data.parentId);
-      data.parentId = newParentId;
+      data.parentId = new ObjectId(query.parentId);
     }
-    const newUserId = ObjectId(data.userId);
+    const newUserId = new ObjectId(data.userId);
     data.userId = newUserId;
 
     await this.db.collection('files').insertOne(data);
