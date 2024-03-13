@@ -132,12 +132,10 @@ class DBClient {
 
     for (const [key, val] of Object.entries(file)) {
       if (key === '_id') {
-        data.id = val.toString();
-      } else if (key === 'userId') {
-        data.userId = val.toString();
+        data.id = val;
       } else if (key === 'parentId') {
         if (val === '0') data.parentId = Number(val);
-        else data.parentId = val.toString();
+        else data.parentId = val;
       } else {
         data[key] = val;
       }
