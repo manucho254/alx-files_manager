@@ -53,12 +53,10 @@ class DBClient {
   }
 
   async findFile(query) {
-    let obj = { ...query };
+    const obj = { ...query };
 
-    if (obj._id)
-	obj._id = new ObjectId(query._id);
-    if (obj.userId)
-	obj.userId = new ObjectId(query.userId);
+    if (obj._id) { obj._id = new ObjectId(query._id); }
+    if (obj.userId) { obj.userId = new ObjectId(query.userId); }
 
     const file = await this.db.collection('files').findOne(obj);
     const data = {};
@@ -87,15 +85,15 @@ class DBClient {
       { $limit: 20 },
       // Additional aggregation stages if needed
     ];
-   
+
     if (query.parentId !== '0') {
-       newParentId = new ObjectId(query.parentId);
-       pipeline.push({ $match: { parentId: newParentId } });
-     }
-    
+      newParentId = new ObjectId(query.parentId);
+      pipeline.push({ $match: { parentId: newParentId } });
+    }
+
     const files = await this.db.collection('files').aggregate(pipeline).toArray();
     const data = [];
-      
+
     files.forEach((file) => {
       const obj = {};
       for (const [key, val] of Object.entries(file)) {
