@@ -25,7 +25,7 @@ const getMe = async (req, res) => {
     const newObjId = new ObjectId(userId);
     const user = await dbClient.findUser({ _id: newObjId });
 
-    return res.status(201).json({ id: userId, email: user.email });
+    return res.status(200).json({ id: userId, email: user.email });
   } catch (err) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
