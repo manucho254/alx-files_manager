@@ -104,7 +104,6 @@ class DBClient {
     data.userId = newUserId;
 
     const result = await this.db.collection('files').insertOne(data);
-    console.log(result);
     const file = await this.findFile({ userId: query.userId, _id: result.insertedId });
 
     return file;
@@ -132,14 +131,9 @@ class DBClient {
 
     for (const [key, val] of Object.entries(file)) {
       if (key === '_id') {
-        data.id = val.toString();
-      } else if (key === 'parentId') {
-        if (val === '0') data[key] = 0;
-        else data[key] = val.toString();
-      } else if (key === 'userId') {
-        data[key] = val.toString();
+        data.id = val;
       } else {
-        data[key] = val;
+        data[key] = val === '0' ? Number(val) : val;
       }
     }
 
