@@ -64,7 +64,7 @@ class DBClient {
     const file = await this.db.collection('files').findOne(obj);
 
     if (file) {
-      return this.cleanData(file);
+      return DBClient.cleanData(file);
     }
     return null;
   }
@@ -90,7 +90,7 @@ class DBClient {
     const data = [];
 
     files.forEach((file) => {
-      data.push(this.cleanData(file));
+      data.push(DBClient.cleanData(file));
     });
     return data;
   }
@@ -132,10 +132,12 @@ class DBClient {
 
     for (const [key, val] of Object.entries(file)) {
       if (key === '_id') {
-        data.id = val;
+        data.id = val.toString();
       } else if (key === 'parentId') {
         if (val === '0') data[key] = 0;
-        else data[key] = val;
+        else data[key] = val.toString();
+      } else if (key === 'userId') {
+	data[key] = val.toString();
       } else {
         data[key] = val;
       }
